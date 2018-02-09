@@ -16,13 +16,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 	// write your code here
 
-
-        JFrame window = new JFrame();
-        JSlider slider = new JSlider();
-        slider.setMaximum(1023);
-        window.add(slider);
-        window.pack();
-        window.setVisible(true);
+        System.out.println("-- Start--");
 
         CommPortIdentifier serialPort;
         Enumeration<CommPortIdentifier> enumComm;
@@ -36,7 +30,6 @@ public class Main {
             }
         }
 
-        System.out.println("-- End Programm --");
     }
 
 

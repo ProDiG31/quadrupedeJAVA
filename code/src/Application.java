@@ -1,7 +1,5 @@
-import ui.presenter.ConnectPresenter;
 import ui.presenter.DashboardPresenter;
 import ui.service.Dispatcher;
-import ui.view.ConnectView;
 import ui.view.DashboardView;
 
 import javax.swing.*;
@@ -22,9 +20,9 @@ public class Application {
 
         Dispatcher dispatcher = new Dispatcher(jFrame);
         dispatcher.registerPresenter(new DashboardPresenter(new DashboardView()));
-        dispatcher.registerPresenter(new ConnectPresenter(new ConnectView()));
+        //dispatcher.registerPresenter(new ConnectPresenter(new ConnectView()));
         jFrame.setVisible(true);
-        jFrame.setName(ConnectPresenter.NAME);
+        //jFrame.setName(ConnectPresenter.NAME);
         jFrame.setSize(800, 800);
 
         System.out.println("-- End Programm --");
