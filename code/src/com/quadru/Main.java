@@ -1,6 +1,7 @@
 package com.quadru;
 
-import gnu.io.*;
+
+import gnu.io.CommPortIdentifier;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.Enumeration;
 import java.util.Scanner;
 
 import static gnu.io.CommPortIdentifier.getPortIdentifiers;
+
 
 public class Main {
 

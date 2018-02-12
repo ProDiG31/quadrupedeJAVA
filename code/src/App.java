@@ -1,8 +1,19 @@
+import javafx.application.Application;
+import javafx.stage.Stage;
+import ui.control.ControlStage;
 
-public class App {
+public class App extends Application  {
 
-    public static void main (String[] args) {
-        Application.main(args);
+    public static void main(String[] args) {
+        Application.launch(args);
     }
 
+    @Override
+    public void start(Stage primaryStage) {
+
+        primaryStage = new ControlStage();
+        primaryStage.show();
+        primaryStage.setFullScreen(true);
+
+    }
 }

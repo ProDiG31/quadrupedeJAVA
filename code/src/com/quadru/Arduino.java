@@ -1,11 +1,12 @@
 package com.quadru;
 
+
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 
-//import java.awt.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -39,14 +40,18 @@ public class Arduino {
     }
 
 
-    public static void connect(String portName, Label messager) throws Exception
+    public static boolean connect(String portName, int baudrate, Label messager) throws Exception
     {
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
         // Check si le port identifié est deja utilisé
         if ( portIdentifier.isCurrentlyOwned()) {
-            //System.out.println("Error: Port is currently in use");
+
+            messager.setTextFill(Color.RED);
             messager.setText("Error: Port is currently in use");
+            return false;
         } else {
+
+            messager.setTextFill(Color.ORANGE);
             // Creation de l'instance de port a partir de son identifier
             setPort(portIdentifier.getName());
             System.out.println("Port selectionné : "+ getPort());
@@ -58,18 +63,25 @@ public class Arduino {
 
             if (commPort instanceof SerialPort) {
                 SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+                serialPort.setSerialPortParams( baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
                 InputStream in = serialPort.getInputStream();
                 OutputStream out = serialPort.getOutputStream();
+
+                messager.setTextFill(Color.GREEN);
 
                 (new Thread(new SerialWriter(out))).start();
 
                 serialPort.addEventListener(new SerialReader(in));
                 serialPort.notifyOnDataAvailable(true);
 
+                return true;
+
             } else {
-                System.out.println("Error: Only serial ports are handled by this example.");
+                messager.setTextFill(Color.RED);
+                System.out.println("Error: Only serial ports are handled by this software.");
+                messager.setText("Error: Only serial ports are handled by this software");
+                return false;
             }
         }
     }
