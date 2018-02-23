@@ -40,7 +40,7 @@ public class Arduino {
     }
 
 
-    public static boolean connect(String portName, int baudrate, Label messager) throws Exception
+    public static SerialPort connect(String portName, int baudrate, Label messager) throws Exception
     {
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
         // Check si le port identifié est deja utilisé
@@ -48,7 +48,7 @@ public class Arduino {
 
             messager.setTextFill(Color.RED);
             messager.setText("Error: Port is currently in use");
-            return false;
+            return null;
         } else {
 
             messager.setTextFill(Color.ORANGE);
@@ -57,31 +57,24 @@ public class Arduino {
             System.out.println("Port selectionné : "+ getPort());
             messager.setText("Port selectionné : "+ getPort());
 
-            CommPort commPort = portIdentifier.open("open Comm",2000);
+            CommPort commPort = portIdentifier.open("Comm",2000);
             System.out.println("-- Ouverture de la connection --");
             messager.setText("-- Ouverture de la connection --");
 
             if (commPort instanceof SerialPort) {
                 SerialPort serialPort = (SerialPort) commPort;
+
+                System.out.println("-- Ouverture de la connection vers ARDUINO--");
+
                 serialPort.setSerialPortParams( baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
-                InputStream in = serialPort.getInputStream();
-                OutputStream out = serialPort.getOutputStream();
-
-                messager.setTextFill(Color.GREEN);
-
-                (new Thread(new SerialWriter(out))).start();
-
-                serialPort.addEventListener(new SerialReader(in));
-                serialPort.notifyOnDataAvailable(true);
-
-                return true;
+                return serialPort;
 
             } else {
                 messager.setTextFill(Color.RED);
                 System.out.println("Error: Only serial ports are handled by this software.");
                 messager.setText("Error: Only serial ports are handled by this software");
-                return false;
+                return null;
             }
         }
     }

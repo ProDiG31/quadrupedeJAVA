@@ -3,20 +3,22 @@ package ui.view;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.quadru.Arduino;
-import javafx.scene.Group;
+import gnu.io.SerialPort;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import ui.control.ControlStage;
 
 import static com.quadru.Arduino.connect;
 
 public class StageConnect extends Parent{
 
+    public final String NAME_SCENE = "StageConnect";
     public VBox grid;
     public JFXButton btnConnect;
     public JFXButton btnRefresh;
@@ -76,14 +78,13 @@ public class StageConnect extends Parent{
             if (portSelect.getValue() != null && !portSelect.getValue().isEmpty()) {
                 if (baudRateSelect.getValue() != null && !baudRateSelect.getValue().toString().isEmpty()){
                     try {
-                        if (connect(portSelect.getValue(), baudRateSelect.getValue(), messager)){
                             //Redirect on Dashboard
                             messager.setTextFill(Color.GREEN);
-//                            this.getParent().add();
-//                            this.getParent().getChildrenUnmodifiable().add()
-                        } else {
-                            messager.setTextFill(Color.RED);
-                        };
+                            SerialPort serialPort = connect(portSelect.getValue(), baudRateSelect.getValue(), messager);
+                            ControlStage primaryStage = (ControlStage) this.getScene().getWindow();
+                            if (serialPort != null){
+                                primaryStage.swapDashboard(serialPort);
+                            }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

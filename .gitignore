@@ -10,6 +10,8 @@
 #Idea folder
 /.idea/*
 /code/.idea/*
+
+#Sources Folder
 /sources/__MACOSX
 
 # Mobile Tools for Java (J2ME)

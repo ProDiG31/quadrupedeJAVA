@@ -13,7 +13,6 @@ public class App extends Application  {
 
         primaryStage = new ControlStage();
         primaryStage.show();
-        primaryStage.setFullScreen(true);
 
     }
 }

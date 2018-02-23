@@ -1,9 +1,10 @@
 package ui.control;
 
+import gnu.io.SerialPort;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.lwjgl.Version;
 import ui.view.StageConnect;
 import ui.view.StageDashboard;
 
@@ -15,26 +16,15 @@ public class ControlStage extends Stage {
     private List<Scene> views;
 
     public ControlStage(){
-        this.setTitle("Quadrupede Controller" + Version.getVersion());
-
+        this.setTitle("Quadrupede Controller");
         this.views = new ArrayList<>();
-
-        this.loadScene();
-//        this.setListener();
-
+        this.setScene(new Scene(new StageConnect(),  500, 650, Color.YELLOW));
     }
 
-    private void loadScene(){
-
-        Scene scene = new Scene(new StageConnect(),  500, 650, Color.WHITE);
-        Scene dashboard = new Scene(new StageDashboard(),  1200, 850, Color.WHITE);
-
-        this.views.add(scene);
-        this.views.add(dashboard);
-        this.setScene(dashboard);
+    public void swapDashboard(SerialPort portArduino){
+        this.setScene(new Scene(new StageDashboard(portArduino),  800, 850, (Color.web("#293133"))));
+        this.setFullScreen(true);
     }
 
-    private void setListener(){
 
-    }
 }

@@ -1,53 +1,95 @@
 package ui.view;
 
-import com.jfoenix.controls.JFXRippler;
-import com.jfoenix.controls.JFXSlider;
-import javafx.geometry.Orientation;
+import com.quadru.SerialReader;
+import com.quadru.SerialWriter;
+import gnu.io.SerialPort;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.layout.VBox;
-import ui.component.ServoSlider;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import ui.component.Viewers3d;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
 
 public class StageDashboard extends Parent {
 
-    private ServoSlider[] servo_slider;
-    private Viewers3d quadru_3d_views;
+    //private ServoSliderEx[] servo_slider;
+    //private Viewers3d quadru_3d_views;
+    private SerialPort commArduino;
 
-    public StageDashboard(){
+    public StageDashboard(SerialPort commArduino){
+        this.commArduino = commArduino;
+        this.set3dView();
+        this.setDashboard();
+    }
 
-        VBox gridServoSlider = new VBox();
-        servo_slider = new ServoSlider[8];
+    public void setDashboard(){
+        setServo();
+        setDialog();
+    }
 
-        for (int i = 0 ; i < servo_slider.length ; i++){
-            ServoSlider slid = new ServoSlider("Servo_"+i);
-            slid.setStyle("-fx-border: solid #5B6DCD 10px;");
-            servo_slider[i] = slid;
+    public void set3dView(){
+        Viewers3d view3d = new Viewers3d();
+        //view3d.getSubcene().
+        view3d.getSubcene().setTranslateX(800);
+        view3d.getSubcene().setTranslateY(10);
+        view3d.getSubcene().setTranslateZ(2);
+        this.getChildren().add(view3d.getSubcene());
+    }
 
+    private void setServo(){
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getResource("/ui/view/component/ServoDashboard.fxml"));
+        AnchorPane sliderDashboard = null;
+        try {
+            sliderDashboard = loader.load();
+            sliderDashboard.setLayoutX(50);
+            sliderDashboard.setLayoutY(20);
+        } catch (IOException e){
+            e.printStackTrace();
         }
+        sliderDashboard.setTranslateZ(10);
+        this.getChildren().add(sliderDashboard);
+    }
 
-        gridServoSlider.setSpacing(25);
-        gridServoSlider.getChildren().addAll(servo_slider);
+    private void setDialog(){
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getResource("/ui/view/component/readerStream.fxml"));
+        AnchorPane gridDialog = null;
 
-        gridServoSlider.setLayoutX(50);
-        gridServoSlider.setLayoutY(50);
+        try {
+            gridDialog = loader.load();
+            gridDialog.setLayoutX(50);
+            gridDialog.setLayoutY(450);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.getChildren().add(gridDialog);
+    }
 
-        final String cssDefault = "-fx-border-color: Black;\n"
-                + "-fx-border-radius: 30;\n"
-                + "-fx-border-width: 4;\n"
-                + "-fx-padding: 20;\n";
-        gridServoSlider.setStyle(cssDefault);
+    private void setThread() throws IOException, TooManyListenersException {
 
-        VBox grid3Dviewer = new VBox();
-        quadru_3d_views = new Viewers3d();
-        grid3Dviewer.getChildren().add(quadru_3d_views);
+        System.out.println("-- Connection établie --");
 
-        grid3Dviewer.setLayoutX(800);
-        grid3Dviewer.setLayoutY(50);
+        InputStream in = commArduino.getInputStream();
+        OutputStream out = commArduino.getOutputStream();
 
-        grid3Dviewer.setStyle(cssDefault);
+        System.out.println("-- Streams I/O ouverts --");
 
-        this.getChildren().add(gridServoSlider);
-        this.getChildren().add(grid3Dviewer);
+        System.out.println("-- start thread --");
+
+        (new Thread(new SerialWriter(out))).start();
+
+        System.out.println("-- Setting listener on SerialPort --");
+
+        commArduino.addEventListener(new SerialReader(in));
+        commArduino.notifyOnDataAvailable(true);
+
+        //button.setOnAction((action)->dialog.show(rootStackPane));
 
     }
 }
