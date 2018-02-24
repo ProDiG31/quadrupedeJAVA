@@ -14,7 +14,7 @@ import static com.quadru.StlLoader.loadStlFile;
 public class quadru3d extends Parent {
 
     private static final int VIEWPORT_SIZE = 800;
-    private static final double MODEL_SCALE_FACTOR = 4;
+    private static final double MODEL_SCALE_FACTOR = 6;
     private static final double MODEL_X_OFFSET = 0; // standard
     private static final double MODEL_Y_OFFSET = 0; // standard
     private static final String PART_ROOT_PATH = "ui/component/part/";

@@ -17,6 +17,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import ui.component.Axis;
 import ui.component.quadru3d;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class Viewer implements Initializable {
 
     private PerspectiveCamera camera;
     private MeshView[] meshView;
-    private Group axis;
+    private Axis axis;
 
     private static final int VIEWPORT_SIZE = 500;
     private static final double MODEL_SCALE_FACTOR = 6;
@@ -92,7 +93,9 @@ public class Viewer implements Initializable {
 
         RotateTransition rotate = rotate3dGroup(meshInGroup);
         this.meshGroup.getChildren().add(createControls(rotate));
-        meshInGroup.getChildren().add(buildAxes());
+
+        axis = buildAxes();
+        meshInGroup.getChildren().add(axis);
     }
 
     private HBox createControls(RotateTransition rotateTransition) {
@@ -124,7 +127,6 @@ public class Viewer implements Initializable {
             }
         });
 
-
         HBox controls = new HBox(10, rotate, cull, wireframe);
         controls.setPadding(new Insets(10));
         return controls;
@@ -148,36 +150,16 @@ public class Viewer implements Initializable {
         return quadru.getMeshView();
     }
 
-    private Group buildAxes() {
+    private Axis buildAxes() {
+        return new Axis(MODEL_SCALE_FACTOR);
+    }
 
-        axis = new Group();
-
-        final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
-
-        final PhongMaterial greenMaterial = new PhongMaterial();
-        greenMaterial.setDiffuseColor(Color.DARKGREEN);
-        greenMaterial.setSpecularColor(Color.GREEN);
-
-        final PhongMaterial blueMaterial = new PhongMaterial();
-        blueMaterial.setDiffuseColor(Color.DARKBLUE);
-        blueMaterial.setSpecularColor(Color.BLUE);
-
-        final Box xAxis = new Box(250, 1, 1);
-        final Box yAxis = new Box(1, 250, 1);
-        final Box zAxis = new Box(1, 1, 250);
-
-        xAxis.setMaterial(redMaterial);
-        yAxis.setMaterial(greenMaterial);
-        zAxis.setMaterial(blueMaterial);
-
-        axis.getChildren().addAll(xAxis,yAxis,zAxis);
-
-        axis.setScaleX(MODEL_SCALE_FACTOR);
-        axis.setScaleY(MODEL_SCALE_FACTOR);
-        axis.setScaleZ(MODEL_SCALE_FACTOR);
-
+    public Axis getAxis() {
         return axis;
     }
+
+    public void setAxis(Axis axis) {
+        this.axis = axis;
+    }
+
 }

@@ -1,6 +1,7 @@
 package ui.component;
 
 import javafx.geometry.Point3D;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
@@ -38,6 +39,23 @@ public abstract class Part {
     protected void Colorise(PhongMaterial sample){
         for (MeshView face : part3d) {
             face.setMaterial(sample);
+        }
+    }
+
+    protected void DefineRotate(){
+        for (MeshView face : part3d) {
+            face.setOnKeyPressed(event -> {
+            KeyCode keycode = event.getCode();
+            System.out.println("key handle "+ event.getCode());
+
+            // Add MoveUp controls
+            if(keycode == KeyCode.UP) {
+            }
+
+            // Add MoveDown controls
+            if(keycode == KeyCode.DOWN) {
+            }
+        });
         }
     }
 
